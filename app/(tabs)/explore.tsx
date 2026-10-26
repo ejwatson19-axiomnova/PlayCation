@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Chip } from '@/src/components/ui';
@@ -29,12 +29,9 @@ export default function ExploreScreen() {
           <Text style={styles.h1}>
             Where's the <Text style={{ color: colors.greenText }}>big game?</Text>
           </Text>
-          <TextInput
-            accessibilityLabel="Search"
-            placeholder="Search a tournament, field or city"
-            placeholderTextColor="#8A97AB"
-            style={styles.search}
-          />
+          <Pressable accessibilityRole="search" accessibilityLabel="Search events" onPress={() => router.push('/search')} style={styles.search}>
+            <Text style={styles.searchText}>Search a tournament, field or city</Text>
+          </Pressable>
         </View>
 
         <View style={{ gap: 8 }}>
@@ -90,7 +87,8 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, gap: 10 },
   logo: { width: 110, height: 55 },
   h1: { fontSize: 25, fontWeight: '800', color: colors.navy },
-  search: { height: 52, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, paddingHorizontal: 16, fontSize: 15, color: colors.ink },
+  search: { height: 52, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, borderRadius: radius.lg, paddingHorizontal: 16, justifyContent: 'center' },
+  searchText: { fontSize: 15, color: '#8A97AB' },
   step: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   stepNum: { width: 22, height: 22, borderRadius: 11, backgroundColor: colors.navy, alignItems: 'center', justifyContent: 'center' },
   stepNumText: { color: colors.white, fontSize: 12, fontWeight: '700' },

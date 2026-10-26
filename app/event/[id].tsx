@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Chip, Segmented } from '@/src/components/ui';
 import { EAT, PLAY, STAYS, type PlaceType } from '@/src/data/mock';
+import { openDirections } from '@/src/lib/maps';
 import { useApp } from '@/src/state/AppState';
 import { colors, radius, shadow } from '@/src/theme';
 
@@ -84,8 +85,12 @@ export default function EventScreen() {
           <Pressable
             key={r.key}
             accessibilityRole="button"
-            disabled={!r.stayId}
-            onPress={() => r.stayId && router.push({ pathname: '/stay/[id]', params: { id: r.stayId, eventId: event.id } })}
+            accessibilityHint={r.stayId ? 'Opens the listing' : 'Opens directions in your map app'}
+            onPress={() =>
+              r.stayId
+                ? router.push({ pathname: '/stay/[id]', params: { id: r.stayId, eventId: event.id } })
+                : openDirections(`${r.name} near ${event.city}`)
+            }
             style={({ pressed }) => [styles.row, pressed && { opacity: 0.85 }]}>
             <View style={[styles.badge, { backgroundColor: BADGE[tab].bg }]}>
               <Text style={[styles.badgeText, { color: BADGE[tab].fg }]}>{r.tag}</Text>

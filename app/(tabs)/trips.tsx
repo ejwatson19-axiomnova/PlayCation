@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Badge, Button, Card } from '@/src/components/ui';
 import { GAME_TIMES } from '@/src/data/mock';
+import { openDirections } from '@/src/lib/maps';
 import { useApp } from '@/src/state/AppState';
 import { colors, radius } from '@/src/theme';
 
@@ -40,8 +41,11 @@ export default function TripsScreen() {
                 </View>
                 <View style={styles.actions}>
                   <Button label="Message host" variant="navy" onPress={() => router.push('/messages')} style={{ flex: 1 }} />
-                  <Button label="Directions" variant="outline" onPress={() => {}} style={{ flex: 1 }} />
+                  <Button label="Directions" variant="outline" onPress={() => openDirections(booking.stay.name)} style={{ flex: 1 }} />
                 </View>
+                {booking.checkedOut && (
+                  <Button label={booking.review ? 'Edit your review' : 'Leave a review'} variant="accent" onPress={() => router.push('/review')} />
+                )}
               </View>
             </Card>
 

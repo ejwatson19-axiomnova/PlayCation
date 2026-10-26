@@ -24,7 +24,7 @@ export default function WelcomeScreen() {
         ))}
         <Button label="Get started" variant="accent" onPress={() => router.push('/login?mode=signup')} style={{ marginTop: 8 }} />
         <Button label="Log in" variant="outlineLight" onPress={() => router.push('/login')} />
-        <Pressable accessibilityRole="link" onPress={() => {}}>
+        <Pressable accessibilityRole="link" onPress={() => router.push('/host')}>
           <Text style={styles.host}>Own a rental near the fields? List your place</Text>
         </Pressable>
       </View>

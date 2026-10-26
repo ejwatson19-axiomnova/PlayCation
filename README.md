@@ -24,7 +24,17 @@ Scan the QR code with the **Expo Go** app on your phone, or press `w` to open it
 | Listing | `app/stay/[id].tsx` | Drive time to fields, perks, Reserve panel with team cost split |
 | Trips | `app/(tabs)/trips.tsx` | Booked stay, check-in/out, game times, Message host |
 | Messages | `app/(tabs)/messages.tsx` | Chat with the host, quick replies, guided check-out |
-| Profile | `app/(tabs)/profile.tsx` | Account menu |
+| Profile | `app/(tabs)/profile.tsx` | Account menu linking to the screens below |
+| Search | `app/search.tsx` | Find events by sport, organization or city |
+| Reset password | `app/forgot-password.tsx` | Email a reset link (not sent yet) |
+| List your place | `app/host.tsx` | Hosts submit a property near the fields |
+| Leave a review | `app/review.tsx` | Star rating + comments after check-out |
+| My teams | `app/teams.tsx` | Teams, families, and invite by share sheet |
+| Payment methods | `app/payments.tsx` | Placeholder until a payment provider is connected |
+| Notifications | `app/notifications.tsx` | Notification toggles |
+| Help | `app/help.tsx` | FAQ and email support |
+
+Directions buttons (Trips, and Eat/Play places on the Event screen) open Apple Maps or Google Maps.
 
 Shared pieces live in `src/`: `theme.ts` (brand colors), `data/mock.ts` (sample sports, organizations, stays), `state/AppState.tsx` (selected event, booking, messages) and `components/ui.tsx` (buttons, chips, tabs).
 

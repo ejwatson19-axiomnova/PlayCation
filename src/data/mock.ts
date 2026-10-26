@@ -39,7 +39,24 @@ export function eventsFor(sport: Sport, org: string): EventItem[] {
   ];
 }
 
-export type PlaceType = 'Hotel' | 'Condo' | 'Home' | 'Apartment';
+export type SearchHit = EventItem & { sport: string; org: string };
+
+// Searches every sport and organization's events by sport, organization, event name or city.
+export function searchEvents(query: string): SearchHit[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const hits: SearchHit[] = [];
+  for (const s of SPORTS) {
+    for (const o of s.orgs) {
+      const first = eventsFor(s, o)[0];
+      const text = `${s.name} ${o} ${first.name} ${first.city}`.toLowerCase();
+      if (q.split(/\s+/).every((w) => text.includes(w))) hits.push({ ...first, sport: s.name, org: o });
+    }
+  }
+  return hits;
+}
+
+export type PlaceType ='Hotel' | 'Condo' | 'Home' | 'Apartment';
 
 export type Stay = {
   id: string;

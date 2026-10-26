@@ -33,7 +33,7 @@ export default function LoginScreen() {
           <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
           <Field label="Password" value={password} onChangeText={setPassword} placeholder="Password" secure />
           {mode === 'Log in' && (
-            <Pressable accessibilityRole="link" style={{ alignSelf: 'flex-end' }}>
+            <Pressable accessibilityRole="link" onPress={() => router.push('/forgot-password')} style={{ alignSelf: 'flex-end', paddingVertical: 8 }}>
               <Text style={styles.link}>Forgot password?</Text>
             </Pressable>
           )}

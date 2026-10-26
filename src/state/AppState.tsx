@@ -11,6 +11,7 @@ export type Booking = {
   org: string;
   splitWithTeam: boolean;
   checkedOut: boolean;
+  review?: { stars: number; text: string };
 };
 
 type AppState = {
@@ -24,6 +25,8 @@ type AppState = {
   booking: Booking | null;
   book: (stay: Stay, event: EventItem, splitWithTeam: boolean) => void;
   checkOut: () => void;
+  submitReview: (stars: number, text: string) => void;
+  selectEvent: (sportName: string, org: string) => void;
   messages: Message[];
   sendMessage: (text: string) => void;
   unread: number;
@@ -72,6 +75,12 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           { id: String(nextId++), from: 'system', text: 'You checked out. Your host has been notified.', meta: 'Just now' },
           { id: String(nextId++), from: 'host', text: 'Thanks for staying with us! Hope the team had a great tournament. Safe travels home.', meta: '[Host name] · just now' },
         ]);
+      },
+      submitReview: (stars, text) => setBooking((b) => (b ? { ...b, review: { stars, text } } : b)),
+      selectEvent: (sportName, o) => {
+        const next = SPORTS.find((s) => s.name === sportName) ?? SPORTS[0];
+        setSportState(next);
+        setOrg(next.orgs.includes(o) ? o : next.orgs[0]);
       },
       messages,
       sendMessage: (text) => {

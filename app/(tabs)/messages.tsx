@@ -61,7 +61,11 @@ export default function MessagesScreen() {
             <Badge label={booking.checkedOut ? 'CHECKED OUT' : 'BOOKED'} tone={booking.checkedOut ? 'green' : 'orange'} />
           </View>
           {booking.checkedOut ? (
-            <Button label="Leave a review" variant="outlineLight" onPress={() => {}} />
+            <Button
+              label={booking.review ? 'Edit your review' : 'Leave a review'}
+              variant="outlineLight"
+              onPress={() => router.push('/review')}
+            />
           ) : (
             <Button label="Check out" variant="accent" onPress={() => setSheet(true)} />
           )}

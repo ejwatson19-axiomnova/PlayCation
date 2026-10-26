@@ -1,11 +1,17 @@
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Card } from '@/src/components/ui';
 import { colors } from '@/src/theme';
 
-const ROWS = ['My teams', 'Payment methods', 'Notifications', 'Help', 'List your place'];
+const ROWS: { label: string; href: Href }[] = [
+  { label: 'My teams', href: '/teams' },
+  { label: 'Payment methods', href: '/payments' },
+  { label: 'Notifications', href: '/notifications' },
+  { label: 'Help', href: '/help' },
+  { label: 'List your place', href: '/host' },
+];
 
 export default function ProfileScreen() {
   return (
@@ -14,8 +20,12 @@ export default function ProfileScreen() {
         <Text style={styles.h1}>Profile</Text>
         <Card style={{ paddingVertical: 4 }}>
           {ROWS.map((r, i) => (
-            <Pressable key={r} accessibilityRole="button" style={[styles.row, i < ROWS.length - 1 && styles.line]}>
-              <Text style={styles.rowText}>{r}</Text>
+            <Pressable
+              key={r.label}
+              accessibilityRole="button"
+              onPress={() => router.push(r.href)}
+              style={({ pressed }) => [styles.row, i < ROWS.length - 1 && styles.line, pressed && { opacity: 0.7 }]}>
+              <Text style={styles.rowText}>{r.label}</Text>
               <Text style={styles.chev}>›</Text>
             </Pressable>
           ))}
