@@ -60,6 +60,8 @@ export type PlaceType ='Hotel' | 'Condo' | 'Home' | 'Apartment';
 
 export type Stay = {
   id: string;
+  /** Which provider supplied this listing (see src/services/lodging/registry.ts). */
+  source?: string;
   type: PlaceType;
   name: string;
   summary: string;

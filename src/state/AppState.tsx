@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
 import { STAYS, SPORTS, eventsFor, type EventItem, type Sport, type Stay } from '@/src/data/mock';
+import { getCachedStay } from '@/src/services/lodging';
 
 export type Message = { id: string; from: 'me' | 'host' | 'system'; text: string; meta: string };
 
@@ -61,7 +62,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       setOrg,
       events,
       findEvent: (id) => events.find((e) => e.id === id),
-      findStay: (id) => STAYS.find((s) => s.id === id),
+      findStay: (id) => getCachedStay(id) ?? STAYS.find((s) => s.id === id),
       booking,
       book: (stay, event, splitWithTeam) => {
         setBooking({ stay, event, sport, org, splitWithTeam, checkedOut: false });

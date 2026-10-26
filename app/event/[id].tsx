@@ -1,11 +1,13 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Chip, Segmented } from '@/src/components/ui';
-import { EAT, PLAY, STAYS, type PlaceType } from '@/src/data/mock';
+import { Button, Chip, Segmented } from '@/src/components/ui';
+import { EAT, PLAY, type PlaceType } from '@/src/data/mock';
 import { openDirections } from '@/src/lib/maps';
+import { usingSampleData } from '@/src/services/lodging';
+import { useStays } from '@/src/services/lodging/useStays';
 import { useApp } from '@/src/state/AppState';
 import { colors, radius, shadow } from '@/src/theme';
 
@@ -25,6 +27,7 @@ export default function EventScreen() {
   const event = findEvent(id);
   const [tab, setTab] = useState<Tab>('Stay');
   const [type, setType] = useState<'Any' | PlaceType>('Any');
+  const lodging = useStays(event ? { eventId: event.id, venueName: `${sport.venue} for ${event.name}`, city: event.city } : null, type);
 
   if (!event) {
     return (
@@ -34,10 +37,9 @@ export default function EventScreen() {
     );
   }
 
-  const stays = STAYS.filter((s) => type === 'Any' || s.type === type).sort((a, b) => a.driveMin - b.driveMin);
   const rows =
     tab === 'Stay'
-      ? stays.map((s) => ({ key: s.id, tag: s.type.toUpperCase().slice(0, 5), name: s.name, note: `Sleeps ${s.sleeps} · ${s.pricePerNight}/night`, drive: s.driveMin, stayId: s.id }))
+      ? lodging.stays.map((s) => ({ key: s.id, tag: s.type.toUpperCase().slice(0, 5), name: s.name, note: `Sleeps ${s.sleeps} · ${s.pricePerNight}/night`, drive: s.driveMin, stayId: s.id }))
       : (tab === 'Eat' ? EAT : PLAY).map((p) => ({ key: p.name, tag: p.tag, name: p.name, note: p.note, drive: p.driveMin, stayId: undefined as string | undefined }));
 
   const captions: Record<Tab, string> = {
@@ -79,8 +81,20 @@ export default function EventScreen() {
             ))}
           </ScrollView>
         )}
-        <Text style={styles.caption}>{captions[tab]}</Text>
-        {rows.length === 0 && <Text style={styles.caption}>No {type.toLowerCase()} stays for this event yet.</Text>}
+        <Text style={styles.caption}>
+          {captions[tab]}
+          {tab === 'Stay' && usingSampleData ? ' · sample listings' : ''}
+        </Text>
+        {tab === 'Stay' && lodging.loading && <ActivityIndicator color={colors.navy} style={{ marginTop: 12 }} />}
+        {tab === 'Stay' && lodging.error && (
+          <View style={{ gap: 8 }}>
+            <Text style={styles.error}>{lodging.error}</Text>
+            <Button label="Try again" variant="outline" onPress={lodging.retry} />
+          </View>
+        )}
+        {!(tab === 'Stay' && (lodging.loading || lodging.error)) && rows.length === 0 && (
+          <Text style={styles.caption}>No {type.toLowerCase()} stays for this event yet.</Text>
+        )}
         {rows.map((r) => (
           <Pressable
             key={r.key}
@@ -124,6 +138,7 @@ const styles = StyleSheet.create({
   sheet: { flex: 1, marginTop: -18, backgroundColor: colors.ground, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl },
   sheetBody: { padding: 16, gap: 12, paddingBottom: 32 },
   caption: { fontSize: 12, color: colors.muted },
+  error: { fontSize: 14, color: colors.alert },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.white, borderRadius: radius.md, padding: 12, ...shadow },
   badge: { width: 48, height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontSize: 10, fontWeight: '700' },

@@ -44,3 +44,5 @@ Shared pieces live in `src/`: `theme.ts` (brand colors), `data/mock.ts` (sample 
 - Tournament schedules and field locations from sports organizations
 - Hotel inventory (booking network) and rental listings (property-management channel partners)
 - Live map, payments, and real host messaging
+
+See `docs/INTEGRATIONS.md` for how lodging partners (Expedia Rapid, Rentals United, Guesty and others) plug in.
