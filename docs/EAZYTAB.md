@@ -7,7 +7,8 @@ Playcation helps families travel to tournaments; EazyTab lets them order food an
 | Where in Playcation | Action | What opens |
 | --- | --- | --- |
 | Event → Eat tab | **Order** on Snack Shack, Grill Station or Coffee & Smoothies | That stand's EazyTab menu, with pickup times between games |
-| Trips → Food at the fields | **Order food** | The tournament venue in EazyTab, to pick a stand |
+| Event → Eat tab, after ordering there once | **Buy again** | The family's last order at that stand, ready to check out |
+| Trips → Food at the fields | **Order food** (then **Buy again**) | The tournament venue in EazyTab; returning families see a "Welcome back" list of last visit's orders by stand |
 | Trips → Food at the fields | **Team tab** | "Coming soon" until EazyTab supports team tabs (below) |
 
 Places with no EazyTab path (the sample restaurants) show no Order button.
@@ -28,6 +29,8 @@ EXPO_PUBLIC_EAZYTAB_WEB_URL=          # empty = EazyTab's demo
 | Production | `https://eazytab.app/<venue path>?source=playcation&eventId=<eventId>` (set the URL with `{venueId}`) | `source` and `eventId` query parameters |
 
 **Venue paths** are EazyTab's own: `<category>.<venue>` or `<category>.<venue>.<stand>`, using lowercase names with dashes (e.g. `youth-tournaments.front-range-sports-complex.snack-shack`). Event IDs are reduced to letters, numbers and dashes so they don't break the dotted format.
+
+Adding `buy-again` before the Playcation tag (demo) or `again=1` (production) opens the family's last order at that stand or venue, ready to check out. EazyTab also shows any returning fan a "Welcome back" list of last visit's orders by stand, link or not.
 
 Orders that arrive this way show "Ordering through Playcation" to the family and **via Playcation** on the stand's ticket and in the admin portal. Tested: EazyTab's `tests/pc_flow.js` (link → stand → pickup time → order → vendor sees "Ready by" and "via Playcation"), plus a cross-check that every link Playcation generates lands on the right stand with the tag.
 

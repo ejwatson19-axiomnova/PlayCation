@@ -28,6 +28,9 @@ type AppState = {
   checkOut: () => void;
   submitReview: (stars: number, text: string) => void;
   selectEvent: (sportName: string, org: string) => void;
+  /** EazyTab places this family has ordered from through Playcation (shows "Buy again"). */
+  orderedAt: Record<string, true>;
+  markOrdered: (eazytabVenueId: string) => void;
   messages: Message[];
   sendMessage: (text: string) => void;
   unread: number;
@@ -48,6 +51,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [unread, setUnread] = useState(0);
+  const [orderedAt, setOrderedAt] = useState<Record<string, true>>({});
 
   const value = useMemo<AppState>(() => {
     const events = eventsFor(sport, org);
@@ -83,6 +87,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         setSportState(next);
         setOrg(next.orgs.includes(o) ? o : next.orgs[0]);
       },
+      orderedAt,
+      markOrdered: (id) => setOrderedAt((m) => (m[id] ? m : { ...m, [id]: true })),
       messages,
       sendMessage: (text) => {
         const t = text.trim();
@@ -92,7 +98,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       unread,
       markRead: () => setUnread(0),
     };
-  }, [sport, org, booking, messages, unread]);
+  }, [sport, org, booking, messages, unread, orderedAt]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

@@ -5,6 +5,8 @@ import { EAZYTAB_WEB_URL } from '@/src/config';
 /** Context Playcation passes so EazyTab can attribute the order. */
 export type OrderContext = {
   eventId?: string;
+  /** Open the family's last order at this place, ready to check out (EazyTab "buy-again"). */
+  again?: boolean;
 };
 
 export const eazytabConnected = Boolean(EAZYTAB_WEB_URL);
@@ -16,15 +18,16 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace
  * Builds the EazyTab ordering link for a venue (or a stand inside it).
  * EazyTab is web-only, so this always opens the browser.
  *
- * - Hash links (the EazyTab demo on claude.ai): `…#fan.{venueId}` + `.playcation-<eventId>`
- * - Production links (eazytab.app): `…/{venueId}` + `?source=playcation&eventId=<eventId>`
+ * - Hash links (the EazyTab demo on claude.ai): `…#fan.{venueId}` + `[.buy-again]` + `.playcation-<eventId>`
+ * - Production links (eazytab.app): `…/{venueId}` + `?source=playcation&eventId=<eventId>[&again=1]`
  */
 export function eazytabLink(venueId: string, ctx: OrderContext = {}): string {
   const base = EAZYTAB_WEB_URL.replace('{venueId}', venueId);
   const event = ctx.eventId ? slug(ctx.eventId) : '';
-  if (base.includes('#')) return `${base}.playcation${event ? '-' + event : ''}`;
+  if (base.includes('#')) return `${base}${ctx.again ? '.buy-again' : ''}.playcation${event ? '-' + event : ''}`;
   const params = new URLSearchParams({ source: 'playcation' });
   if (event) params.set('eventId', event);
+  if (ctx.again) params.set('again', '1');
   return `${base}${base.includes('?') ? '&' : '?'}${params.toString()}`;
 }
 

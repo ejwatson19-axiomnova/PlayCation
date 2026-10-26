@@ -13,7 +13,7 @@ import { colors, radius } from '@/src/theme';
 const CONCESSIONS_ID = 'youth-tournaments.front-range-sports-complex';
 
 export default function TripsScreen() {
-  const { booking } = useApp();
+  const { booking, orderedAt, markOrdered } = useApp();
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -70,7 +70,15 @@ export default function TripsScreen() {
               <Text style={styles.h3}>Food at the {booking.sport.venue}</Text>
               <Text style={styles.sub}>Order ahead with EazyTab and pick a pickup time between games.</Text>
               <View style={styles.actions}>
-                <Button label="Order food" variant="accent" onPress={() => openEazyTab(CONCESSIONS_ID, { eventId: booking.event.id })} style={{ flex: 1 }} />
+                <Button
+                  label={orderedAt[CONCESSIONS_ID] ? 'Buy again' : 'Order food'}
+                  variant="accent"
+                  onPress={() => {
+                    openEazyTab(CONCESSIONS_ID, { eventId: booking.event.id, again: !!orderedAt[CONCESSIONS_ID] });
+                    markOrdered(CONCESSIONS_ID);
+                  }}
+                  style={{ flex: 1 }}
+                />
                 <Button
                   label="Team tab"
                   variant="outline"

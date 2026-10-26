@@ -24,7 +24,7 @@ const BADGE: Record<Tab, { bg: string; fg: string }> = {
 
 export default function EventScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { findEvent, sport, org } = useApp();
+  const { findEvent, sport, org, orderedAt, markOrdered } = useApp();
   const event = findEvent(id);
   const [tab, setTab] = useState<Tab>('Stay');
   const [type, setType] = useState<'Any' | PlaceType>('Any');
@@ -119,10 +119,14 @@ export default function EventScreen() {
               {r.eazytabVenueId && (
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={`Order from ${r.name} with EazyTab`}
-                  onPress={() => openEazyTab(r.eazytabVenueId!, { eventId: event.id })}
+                  accessibilityLabel={`${orderedAt[r.eazytabVenueId] ? 'Buy again from' : 'Order from'} ${r.name} with EazyTab`}
+                  onPress={() => {
+                    const id = r.eazytabVenueId!;
+                    openEazyTab(id, { eventId: event.id, again: !!orderedAt[id] });
+                    markOrdered(id);
+                  }}
                   style={styles.order}>
-                  <Text style={styles.orderText}>Order</Text>
+                  <Text style={styles.orderText}>{orderedAt[r.eazytabVenueId] ? 'Buy again' : 'Order'}</Text>
                 </Pressable>
               )}
             </View>
