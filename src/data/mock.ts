@@ -89,7 +89,7 @@ export type Place = {
 };
 
 export const EAT: Place[] = [
-  { tag: 'SNACK', name: 'Complex concessions', note: 'Order ahead · pick up at the stand', driveMin: 0, eazytabVenueId: 'sample-concessions' },
+  { tag: 'SNACK', name: 'Complex concessions', note: 'Order ahead · pick up at the stand', driveMin: 0, eazytabVenueId: 'front-range-sports-complex' },
   { tag: 'BBQ', name: '[Restaurant name]', note: 'Big groups welcome', driveMin: 3, eazytabVenueId: 'sample-bbq' },
   { tag: 'PIZZA', name: '[Pizza place]', note: 'Delivers to the fields', driveMin: 5, eazytabVenueId: 'sample-pizza' },
   { tag: 'CAFE', name: '[Breakfast spot]', note: 'Opens 6 AM', driveMin: 4 },

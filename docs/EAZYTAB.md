@@ -12,6 +12,16 @@ Playcation helps families travel to tournaments; EazyTab handles food and drink 
 
 Places without an EazyTab venue ID show no Order button. Until EazyTab links are configured, Order buttons show "Coming soon" instead of a broken link.
 
+## Where EazyTab stands (Oct 26, 2026)
+
+- **Web only.** EazyTab has no phone app and no App Store listing, so `EXPO_PUBLIC_EAZYTAB_APP_URL` stays empty and Playcation opens EazyTab's website.
+- **Pickup only.** EazyTab doesn't deliver yet. Families order ahead, can pick a time between games, and collect at the stand with a Pickup ID or QR code.
+- **Demo complex.** The EazyTab prototype has a "Youth tournaments" category with a demo venue, Front Range Sports Complex (EazyTab ID `front-range-sports-complex`: Snack Shack, Grill Station, Coffee & Smoothies). Playcation's sample concessions point at it.
+- **Attribution.** Orders opened from Playcation show "via Playcation" in EazyTab's vendor and admin portals. The prototype reads it from the link's last dotted part (`...#fan.youth-tournaments.front-range-sports-complex.playcation-<eventId>`), because claude.ai only passes a plain `#token` to a page. In production, EazyTab reads the query parameters below.
+- **Team tabs** are not built in EazyTab yet; a `mode=team` link opens the same ordering page.
+
+To demo it, set `EXPO_PUBLIC_EAZYTAB_WEB_URL=https://claude.ai/artifact/1rxKTgNgUpL4ASjkzjQw6v#fan.youth-tournaments.{venueId}` (the viewer must be signed in to claude.ai with access to the prototype).
+
 ## Phase 1: links (no API needed)
 
 Playcation opens EazyTab with a link. Set these in Playcation's `.env`:

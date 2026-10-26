@@ -8,7 +8,7 @@ import { openDirections } from '@/src/lib/maps';
 import { openEazyTab } from '@/src/services/ordering/eazytab';
 
 // Sample: the tournament venue's EazyTab ID will come from the event feed.
-const CONCESSIONS_ID = 'sample-concessions';
+const CONCESSIONS_ID = 'front-range-sports-complex'; // the demo complex in the EazyTab prototype
 import { useApp } from '@/src/state/AppState';
 import { colors, radius } from '@/src/theme';
 

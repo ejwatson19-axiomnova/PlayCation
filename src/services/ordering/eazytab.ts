@@ -14,6 +14,12 @@ export const eazytabConnected = Boolean(EAZYTAB_WEB_URL || EAZYTAB_APP_URL);
 
 function build(template: string, venueId: string, ctx: OrderContext): string {
   const base = template.replace('{venueId}', encodeURIComponent(venueId));
+  // A link that ends in a #token (the EazyTab prototype on claude.ai) can only carry letters,
+  // digits, dots and dashes after the #, so the attribution rides as one more dotted part.
+  if (base.includes('#')) {
+    const tag = ['playcation', ctx.eventId ?? ''].filter(Boolean).join('-').toLowerCase().replace(/[^a-z0-9-]+/g, '-');
+    return `${base}.${tag}`;
+  }
   const params = new URLSearchParams({ source: 'playcation', mode: ctx.mode ?? 'personal' });
   if (ctx.eventId) params.set('eventId', ctx.eventId);
   if (ctx.teamName) params.set('team', ctx.teamName);
@@ -21,7 +27,8 @@ function build(template: string, venueId: string, ctx: OrderContext): string {
 }
 
 /**
- * Opens EazyTab for a venue: the EazyTab app if installed, otherwise the web ordering page.
+ * Opens EazyTab for a venue. EazyTab is web only, so this is normally its web ordering page;
+ * the app link is tried first only if one is configured.
  */
 export async function openEazyTab(venueId: string, ctx: OrderContext = {}) {
   if (!eazytabConnected) {
