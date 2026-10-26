@@ -8,7 +8,12 @@
     "scheme": "playcation",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "eazytab"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

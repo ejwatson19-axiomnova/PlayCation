@@ -79,11 +79,19 @@ export const STAYS: Stay[] = [
   { id: 'apt-1', type: 'Apartment', name: '[Apartment name] · 3BR', summary: '3 bedrooms · 2 baths', sleeps: 7, driveMin: 11, miles: 4.0, pricePerNight: '[$000]', perks: ['Full kitchen', 'Washer', 'Elevator', 'Free parking'] },
 ];
 
-export type Place = { tag: string; name: string; note: string; driveMin: number };
+export type Place = {
+  tag: string;
+  name: string;
+  note: string;
+  driveMin: number;
+  /** Set when the venue takes orders through EazyTab. */
+  eazytabVenueId?: string;
+};
 
 export const EAT: Place[] = [
-  { tag: 'BBQ', name: '[Restaurant name]', note: 'Big groups welcome', driveMin: 3 },
-  { tag: 'PIZZA', name: '[Pizza place]', note: 'Delivers to the fields', driveMin: 5 },
+  { tag: 'SNACK', name: 'Complex concessions', note: 'Order ahead · pick up at the stand', driveMin: 0, eazytabVenueId: 'sample-concessions' },
+  { tag: 'BBQ', name: '[Restaurant name]', note: 'Big groups welcome', driveMin: 3, eazytabVenueId: 'sample-bbq' },
+  { tag: 'PIZZA', name: '[Pizza place]', note: 'Delivers to the fields', driveMin: 5, eazytabVenueId: 'sample-pizza' },
   { tag: 'CAFE', name: '[Breakfast spot]', note: 'Opens 6 AM', driveMin: 4 },
   { tag: 'SHOP', name: '[Grocery store]', note: 'Snacks, ice, drinks', driveMin: 3 },
 ];

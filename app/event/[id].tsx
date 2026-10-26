@@ -7,6 +7,7 @@ import { Button, Chip, Segmented } from '@/src/components/ui';
 import { EAT, PLAY, type PlaceType } from '@/src/data/mock';
 import { openDirections } from '@/src/lib/maps';
 import { usingSampleData } from '@/src/services/lodging';
+import { openEazyTab } from '@/src/services/ordering/eazytab';
 import { useStays } from '@/src/services/lodging/useStays';
 import { useApp } from '@/src/state/AppState';
 import { colors, radius, shadow } from '@/src/theme';
@@ -39,12 +40,12 @@ export default function EventScreen() {
 
   const rows =
     tab === 'Stay'
-      ? lodging.stays.map((s) => ({ key: s.id, tag: s.type.toUpperCase().slice(0, 5), name: s.name, note: `Sleeps ${s.sleeps} · ${s.pricePerNight}/night`, drive: s.driveMin, stayId: s.id }))
-      : (tab === 'Eat' ? EAT : PLAY).map((p) => ({ key: p.name, tag: p.tag, name: p.name, note: p.note, drive: p.driveMin, stayId: undefined as string | undefined }));
+      ? lodging.stays.map((s) => ({ key: s.id, tag: s.type.toUpperCase().slice(0, 5), name: s.name, note: `Sleeps ${s.sleeps} · ${s.pricePerNight}/night`, drive: s.driveMin, stayId: s.id as string | undefined, eazytabVenueId: undefined as string | undefined }))
+      : (tab === 'Eat' ? EAT : PLAY).map((p) => ({ key: p.name, tag: p.tag, name: p.name, note: p.note, drive: p.driveMin, stayId: undefined, eazytabVenueId: p.eazytabVenueId }));
 
   const captions: Record<Tab, string> = {
     Stay: `Places to stay, closest to your ${sport.venue} first`,
-    Eat: `Places to eat near your ${sport.venue}`,
+    Eat: `Places to eat near your ${sport.venue} · Order ahead with EazyTab where you see Order`,
     Play: 'Fun between games',
   };
 
@@ -113,7 +114,18 @@ export default function EventScreen() {
               <Text style={styles.rowName}>{r.name}</Text>
               <Text style={styles.rowNote}>{r.note}</Text>
             </View>
-            <Text style={styles.drive}>{r.drive} min</Text>
+            <View style={{ alignItems: 'flex-end', gap: 6 }}>
+              <Text style={styles.drive}>{r.drive === 0 ? 'At venue' : `${r.drive} min`}</Text>
+              {r.eazytabVenueId && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Order from ${r.name} with EazyTab`}
+                  onPress={() => openEazyTab(r.eazytabVenueId!, { eventId: event.id })}
+                  style={styles.order}>
+                  <Text style={styles.orderText}>Order</Text>
+                </Pressable>
+              )}
+            </View>
           </Pressable>
         ))}
       </ScrollView>
@@ -145,4 +157,6 @@ const styles = StyleSheet.create({
   rowName: { fontSize: 14, fontWeight: '600', color: colors.ink },
   rowNote: { fontSize: 12, color: colors.muted },
   drive: { fontSize: 12, fontWeight: '700', color: colors.greenText },
+  order: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, backgroundColor: colors.orange, justifyContent: 'center' },
+  orderText: { fontSize: 13, fontWeight: '700', color: colors.ink },
 });
