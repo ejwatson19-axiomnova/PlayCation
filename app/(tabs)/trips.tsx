@@ -1,16 +1,16 @@
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Badge, Button, Card } from '@/src/components/ui';
 import { GAME_TIMES } from '@/src/data/mock';
 import { openDirections } from '@/src/lib/maps';
 import { openEazyTab } from '@/src/services/ordering/eazytab';
-
-// Sample: the tournament venue's EazyTab ID will come from the event feed.
-const CONCESSIONS_ID = 'sample-concessions';
 import { useApp } from '@/src/state/AppState';
 import { colors, radius } from '@/src/theme';
+
+// Sample: EazyTab's demo tournament venue. Real events will carry their venue's EazyTab path.
+const CONCESSIONS_ID = 'youth-tournaments.front-range-sports-complex';
 
 export default function TripsScreen() {
   const { booking } = useApp();
@@ -68,13 +68,13 @@ export default function TripsScreen() {
 
             <Card style={{ gap: 10 }}>
               <Text style={styles.h3}>Food at the {booking.sport.venue}</Text>
-              <Text style={styles.sub}>Order ahead with EazyTab, or open a team tab that every family can add to and split.</Text>
+              <Text style={styles.sub}>Order ahead with EazyTab and pick a pickup time between games.</Text>
               <View style={styles.actions}>
                 <Button label="Order food" variant="accent" onPress={() => openEazyTab(CONCESSIONS_ID, { eventId: booking.event.id })} style={{ flex: 1 }} />
                 <Button
                   label="Team tab"
                   variant="outline"
-                  onPress={() => openEazyTab(CONCESSIONS_ID, { eventId: booking.event.id, mode: 'team' })}
+                  onPress={() => Alert.alert('Team tabs are coming', "Soon one parent can open a tab for the team and every family can add to it and split it.")}
                   style={{ flex: 1 }}
                 />
               </View>

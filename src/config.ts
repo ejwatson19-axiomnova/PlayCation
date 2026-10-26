@@ -4,12 +4,15 @@
 /** Playcation's own backend. Empty = use sample data. */
 export const API_URL = (process.env.EXPO_PUBLIC_API_URL ?? '').replace(/\/$/, '');
 
+/** EazyTab's clickable demo (a private claude.ai page; share it with testers). */
+const EAZYTAB_DEMO_URL = 'https://claude.ai/artifact/1rxKTgNgUpL4ASjkzjQw6v#fan.{venueId}';
+
 /**
- * EazyTab ordering links (see docs/EAZYTAB.md). {venueId} is replaced with the venue's EazyTab ID.
- * Empty = buttons show a "coming soon" message instead of opening a link.
+ * EazyTab ordering link (see docs/EAZYTAB.md). {venueId} is replaced with the venue's EazyTab path,
+ * e.g. youth-tournaments.front-range-sports-complex. Defaults to the EazyTab demo; set
+ * EXPO_PUBLIC_EAZYTAB_WEB_URL to the production site (eazytab.app) when it launches.
  */
-export const EAZYTAB_WEB_URL = process.env.EXPO_PUBLIC_EAZYTAB_WEB_URL ?? ''; // e.g. https://order.example.com/v/{venueId}
-export const EAZYTAB_APP_URL = process.env.EXPO_PUBLIC_EAZYTAB_APP_URL ?? ''; // e.g. eazytab://venue/{venueId}
+export const EAZYTAB_WEB_URL = process.env.EXPO_PUBLIC_EAZYTAB_WEB_URL || EAZYTAB_DEMO_URL;
 
 /** How long to wait for the backend before showing an error. */
 export const API_TIMEOUT_MS = 12000;

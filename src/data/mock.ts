@@ -89,9 +89,12 @@ export type Place = {
 };
 
 export const EAT: Place[] = [
-  { tag: 'SNACK', name: 'Complex concessions', note: 'Order ahead · pick up at the stand', driveMin: 0, eazytabVenueId: 'sample-concessions' },
-  { tag: 'BBQ', name: '[Restaurant name]', note: 'Big groups welcome', driveMin: 3, eazytabVenueId: 'sample-bbq' },
-  { tag: 'PIZZA', name: '[Pizza place]', note: 'Delivers to the fields', driveMin: 5, eazytabVenueId: 'sample-pizza' },
+  // EazyTab demo venue: Front Range Sports Complex (see the EazyTab repo's README).
+  { tag: 'SNACK', name: 'Snack Shack', note: 'At the complex · order ahead, pick a pickup time', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.snack-shack' },
+  { tag: 'GRILL', name: 'Grill Station', note: 'At the complex · burgers and tenders', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.grill-station' },
+  { tag: 'COFFEE', name: 'Coffee & Smoothies', note: 'At the complex · main entrance', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.coffee-smoothies' },
+  { tag: 'BBQ', name: '[Restaurant name]', note: 'Big groups welcome', driveMin: 3 },
+  { tag: 'PIZZA', name: '[Pizza place]', note: 'Delivers to the fields', driveMin: 5 },
   { tag: 'CAFE', name: '[Breakfast spot]', note: 'Opens 6 AM', driveMin: 4 },
   { tag: 'SHOP', name: '[Grocery store]', note: 'Snacks, ice, drinks', driveMin: 3 },
 ];

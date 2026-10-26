@@ -1,62 +1,66 @@
 # Playcation × EazyTab
 
-Playcation helps families travel to tournaments; EazyTab handles food and drink ordering and tabs at venues. Both are owned by the same company, so this document is the contract between the two apps. Playcation's side is built; EazyTab implements the pieces marked **EazyTab**.
+Playcation helps families travel to tournaments; EazyTab lets them order food and drinks at the venue and pick up with a QR code. Both are owned by the same company. This document is the contract between the two; the EazyTab side lives in the [EazyTab repository](https://github.com/ejwatson19-axiomnova/eazytab) (README → "Youth tournaments and Playcation").
 
 ## What families can do
 
 | Where in Playcation | Action | What opens |
 | --- | --- | --- |
-| Event → Eat tab | **Order** on any place that uses EazyTab, including the venue's concessions | That venue's EazyTab ordering page |
-| Trips → Food at the fields | **Order food** | The tournament venue's concessions |
-| Trips → Food at the fields | **Team tab** | A shared tab the team's families can join and split |
+| Event → Eat tab | **Order** on Snack Shack, Grill Station or Coffee & Smoothies | That stand's EazyTab menu, with pickup times between games |
+| Trips → Food at the fields | **Order food** | The tournament venue in EazyTab, to pick a stand |
+| Trips → Food at the fields | **Team tab** | "Coming soon" until EazyTab supports team tabs (below) |
 
-Places without an EazyTab venue ID show no Order button. Until EazyTab links are configured, Order buttons show "Coming soon" instead of a broken link.
+Places with no EazyTab path (the sample restaurants) show no Order button.
 
-## Phase 1: links (no API needed)
+## Phase 1: links (live in the demo)
 
-Playcation opens EazyTab with a link. Set these in Playcation's `.env`:
+EazyTab is **web-only**: fans, stands and owners all use it in a browser, so Playcation always opens a web link. There is no EazyTab phone app to detect.
+
+Playcation's setting (`.env`, see `.env.example`):
 
 ```
-EXPO_PUBLIC_EAZYTAB_APP_URL=eazytab://venue/{venueId}
-EXPO_PUBLIC_EAZYTAB_WEB_URL=https://<eazytab web ordering host>/v/{venueId}
+EXPO_PUBLIC_EAZYTAB_WEB_URL=          # empty = EazyTab's demo
 ```
 
-Playcation tries the app link first (if the EazyTab app is installed), then the web link. It appends:
-
-| Parameter | Example | Purpose |
+| Mode | Link Playcation builds | How EazyTab tags it |
 | --- | --- | --- |
-| `source` | `playcation` | Attribution for referral reporting |
-| `mode` | `personal` or `team` | `team` opens a shared, splittable tab |
-| `eventId` | `baseball-perfect-game-1` | Which tournament the order is for |
-| `team` | `[Team name]` | Pre-fills the team tab's name (team mode) |
+| Demo (default) | `https://claude.ai/artifact/1rxKTgNgUpL4ASjkzjQw6v#fan.youth-tournaments.front-range-sports-complex.grill-station.playcation-<eventId>` | Last dotted part `playcation-<eventId>` |
+| Production | `https://eazytab.app/<venue path>?source=playcation&eventId=<eventId>` (set the URL with `{venueId}`) | `source` and `eventId` query parameters |
 
-**EazyTab:**
-1. Register the `eazytab://` URL scheme in the EazyTab app (and iOS universal links / Android app links for the web host, if available).
-2. Accept the parameters above; store `source`, `eventId` and `mode` on the order or tab.
-3. Provide each venue's EazyTab ID so Playcation can attach it to restaurants and sports complexes.
+**Venue paths** are EazyTab's own: `<category>.<venue>` or `<category>.<venue>.<stand>`, using lowercase names with dashes (e.g. `youth-tournaments.front-range-sports-complex.snack-shack`). Event IDs are reduced to letters, numbers and dashes so they don't break the dotted format.
 
-Playcation already declares `eazytab` in iOS `LSApplicationQueriesSchemes` (app.json) so it can detect the app. Android 11+ needs a `<queries>` entry added through a config plugin before app detection works there; until then Android uses the web link.
+Orders that arrive this way show "Ordering through Playcation" to the family and **via Playcation** on the stand's ticket and in the admin portal. Tested: EazyTab's `tests/pc_flow.js` (link → stand → pickup time → order → vendor sees "Ready by" and "via Playcation"), plus a cross-check that every link Playcation generates lands on the right stand with the tag.
 
-## Phase 2: API (shared backend)
+The EazyTab demo is a private claude.ai page; share it with testers so the links open for them.
 
-When both apps share accounts and data, replace links with server-to-server calls (from Playcation's backend, never the phone):
+## Phase 2: team tabs (EazyTab to build)
 
-| Endpoint (**EazyTab**) | Use in Playcation |
+EazyTab tabs today belong to one fan at one venue and close when the fan leaves the geofence. A team tab needs:
+
+- One parent opens a tab for a team at the tournament venue, with a spending limit.
+- Other families join with a link Playcation shares to the team.
+- Each family's orders are tracked, and the tab is split by what each family ordered (or evenly).
+- Playcation link: add `team-<name>` as a dotted part (demo) or `mode=team&team=<name>` (production).
+
+## Phase 3: shared API (both apps on one backend)
+
+Server-to-server calls from Playcation's backend, never the phone:
+
+| EazyTab endpoint | Use in Playcation |
 | --- | --- |
-| `GET /v1/venues?lat=&lng=&radiusMiles=` | Mark which nearby places take EazyTab orders; show live menus |
-| `POST /v1/tabs` `{ venueId, mode, eventId, teamId }` | Open a team tab from Playcation and share its join link with team families |
-| `GET /v1/tabs/{id}` | Show the tab total and each family's share in Trips |
-| Webhook `order.status_changed` | Push "Your order is ready at the stand" through Playcation notifications |
-| Webhook `tab.closed` | Record referral revenue per event |
+| `GET /v1/venues?lat=&lng=&radiusMiles=` | EazyTab already has `venues_near()` (geofence migration); mark which places near the fields take EazyTab orders |
+| `POST /v1/tabs`, `GET /v1/tabs/{id}` | Open team tabs from Playcation and show each family's share in Trips |
+| Webhook `order.status_changed` | "Your order is ready at the Snack Shack" through Playcation notifications |
+| Webhook `tab.closed` | Referral revenue per event |
 
-Account linking: one sign-in shared across both apps (single sign-on), so a family's payment method and team membership carry over.
+Account linking: one sign-in across both apps so payment methods and team membership carry over.
 
-## Phase 3: arrival triggers
+## Phase 4: arrival triggers
 
-With geofencing (see the location plan), when a family arrives at a tournament venue that uses EazyTab, Playcation offers "Order ahead at the concessions" and "Open a team tab."
+EazyTab already opens a venue automatically when a fan inside its geofence opens the site. When Playcation adds geofencing, arriving at the tournament can prompt "Order ahead at the Snack Shack."
 
 ## Open decisions
 
-- Referral fee or revenue share between the two businesses, and how it's reported.
-- Who handles payment for a team tab split across families (EazyTab's checkout is the natural owner).
-- Which venues to pilot: the Playcation pilot sports complex and the restaurants around it.
+- How a team tab splits: by what each family ordered, or evenly.
+- Referral fee or revenue share between Playcation and EazyTab, and how it's reported.
+- Which real venues to pilot, starting with Playcation's pilot sports complex.
