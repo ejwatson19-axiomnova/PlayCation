@@ -3,7 +3,7 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from 'r
 import { Button, Chip, Segmented } from '@/src/components/ui';
 import { formatMiles } from '@/src/lib/geo';
 import { openDirections } from '@/src/lib/maps';
-import { chargingUsesSampleData, type Charger } from '@/src/services/charging';
+import { chargingAttribution, chargingUsesSnapshot, type Charger } from '@/src/services/charging';
 import { colors, radius, shadow } from '@/src/theme';
 
 export const CHARGE_ORIGINS = ['Near the fields', 'Near me'] as const;
@@ -33,7 +33,7 @@ export function ChargeList({ venueLabel, origin, onOrigin, fastOnly, onFastOnly,
       </View>
       <Text style={styles.caption}>
         {origin === 'Near me' ? 'Closest to you, using your phone’s location' : `Closest to your ${venueLabel}`}
-        {chargingUsesSampleData ? ' · sample stations' : ''}
+        {chargingUsesSnapshot ? ' · station list from April 2026' : ''}
       </Text>
 
       {loading && <ActivityIndicator color={colors.navy} style={{ marginTop: 12 }} />}
@@ -77,12 +77,14 @@ export function ChargeList({ venueLabel, origin, onOrigin, fastOnly, onFastOnly,
           );
         })}
       {!loading && !error && chargers.length > 0 && <Text style={styles.caption}>Tap a station for directions. Distances are straight-line.</Text>}
+      <Text style={styles.credit}>{chargingAttribution}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   caption: { fontSize: 12, color: colors.muted },
+  credit: { fontSize: 11, color: colors.muted, marginTop: 4 },
   error: { fontSize: 14, color: colors.alert },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.white, borderRadius: radius.md, padding: 12, ...shadow },
   badge: { width: 52, height: 52, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },

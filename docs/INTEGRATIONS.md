@@ -112,10 +112,13 @@ Partners will expect Playcation to handle payments, cancellation and damage poli
 | `src/services/charging/types.ts` | `Charger` and `ChargerSearch` |
 | `src/services/charging/providers/openChargeMap.ts` | Open Charge Map v3 `poi` search, converted to `Charger` |
 | `src/services/charging/providers/backend.ts` | `POST /v1/charging/near` on Playcation's backend |
-| `src/services/charging/providers/sample.ts` | Sample stations until a source is connected |
+| `src/services/charging/providers/nrel.ts` | NREL Alternative Fuel Stations `nearest.json`, converted to `Charger` |
+| `src/services/charging/providers/snapshot.ts` | Built-in list of 433 real public stations within 15 miles of the demo venue (from Open Charge Map's open export, April 2026) |
 | `src/lib/geo.ts` | GPS (when-in-use permission) and distance |
 
-Source order: the backend if `EXPO_PUBLIC_API_URL` is set; else Open Charge Map if `EXPO_PUBLIC_OPENCHARGEMAP_KEY` is set; else sample stations.
+Source order: the backend if `EXPO_PUBLIC_API_URL` is set; else Open Charge Map and/or NREL if their keys are set (both: merged, duplicates removed); else the built-in snapshot. The snapshot only covers the demo venue; elsewhere "Near me" asks the family to use "Near the fields" until live data is connected.
+
+**Snapshot.** Built by `scripts/build-charger-snapshot.py` from [github.com/openchargemap/ocm-export](https://github.com/openchargemap/ocm-export) (refreshed monthly). Only public stations licensed CC BY 4.0 (Open Charge Map contributors) or by NREL ("may be used for any purpose") are included. The app shows the required credit line under the list.
 
 | Source | Coverage | Cost |
 | --- | --- | --- |

@@ -20,5 +20,8 @@ export const EAZYTAB_WEB_URL = process.env.EXPO_PUBLIC_EAZYTAB_WEB_URL || EAZYTA
  */
 export const OPENCHARGEMAP_KEY = process.env.EXPO_PUBLIC_OPENCHARGEMAP_KEY ?? '';
 
+/** NREL (U.S. Department of Energy) station data key, used only when there's no backend. Free at developer.nrel.gov. */
+export const NREL_KEY = process.env.EXPO_PUBLIC_NREL_KEY ?? '';
+
 /** How long to wait for the backend before showing an error. */
 export const API_TIMEOUT_MS = 12000;
