@@ -22,6 +22,7 @@ type BackendStay = {
   distanceMiles?: number;
   nightlyPrice?: { amount: number; currency: string };
   perks?: string[];
+  location?: { lat: number; lng: number };
 };
 
 function toStay(b: BackendStay): Stay {
@@ -38,6 +39,7 @@ function toStay(b: BackendStay): Stay {
       ? new Intl.NumberFormat('en-US', { style: 'currency', currency: b.nightlyPrice.currency, maximumFractionDigits: 0 }).format(b.nightlyPrice.amount)
       : 'See price',
     perks: b.perks ?? [],
+    location: b.location,
   };
 }
 

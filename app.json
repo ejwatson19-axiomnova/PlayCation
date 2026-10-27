@@ -33,6 +33,12 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Playcation uses your location to show stays, food and EV chargers near you and to give directions to the fields."
+        }
       ]
     ],
     "experiments": {

@@ -43,6 +43,8 @@ Shared pieces live in `src/`: `theme.ts` (brand colors), `data/mock.ts` (sample 
 - Real sign-in and accounts
 - Tournament schedules and field locations from sports organizations
 - Hotel inventory (booking network) and rental listings (property-management channel partners)
-- Live map, payments, and real host messaging
+- Payments and real host messaging
+
+The Event screen has a live map (Google Maps on Android, Apple Maps on iPhone) and a Charge tab for EV chargers near the fields or the family's location; see `docs/INTEGRATIONS.md`.
 
 See `docs/INTEGRATIONS.md` for how lodging partners (Expedia Rapid, Rentals United, Guesty and others) plug in, and `docs/EAZYTAB.md` for food and drink ordering with EazyTab.

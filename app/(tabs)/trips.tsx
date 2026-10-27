@@ -67,6 +67,16 @@ export default function TripsScreen() {
             <Text style={styles.sub}>Synced from {booking.org}. Times update automatically.</Text>
 
             <Card style={{ gap: 10 }}>
+              <Text style={styles.h3}>Driving electric?</Text>
+              <Text style={styles.sub}>Find EV chargers near the {booking.sport.venue} or wherever you are, with directions.</Text>
+              <Button
+                label="EV chargers nearby"
+                variant="outline"
+                onPress={() => router.push({ pathname: '/event/[id]', params: { id: booking.event.id, tab: 'Charge' } })}
+              />
+            </Card>
+
+            <Card style={{ gap: 10 }}>
               <Text style={styles.h3}>Food at the {booking.sport.venue}</Text>
               <Text style={styles.sub}>Order ahead with EazyTab and pick a pickup time between games.</Text>
               <View style={styles.actions}>

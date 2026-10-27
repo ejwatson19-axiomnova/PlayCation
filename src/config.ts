@@ -14,5 +14,11 @@ const EAZYTAB_DEMO_URL = 'https://claude.ai/artifact/1rxKTgNgUpL4ASjkzjQw6v#fan.
  */
 export const EAZYTAB_WEB_URL = process.env.EXPO_PUBLIC_EAZYTAB_WEB_URL || EAZYTAB_DEMO_URL;
 
+/**
+ * Open Charge Map key for EV charging stations, used only when there's no backend.
+ * Get one free at openchargemap.org. Empty (and no backend) = sample stations.
+ */
+export const OPENCHARGEMAP_KEY = process.env.EXPO_PUBLIC_OPENCHARGEMAP_KEY ?? '';
+
 /** How long to wait for the backend before showing an error. */
 export const API_TIMEOUT_MS = 12000;

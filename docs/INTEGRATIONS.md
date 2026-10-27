@@ -98,6 +98,32 @@ Each partner requires an application and approval before any keys are issued. Te
 
 Partners will expect Playcation to handle payments, cancellation and damage policies, and guest verification; early pilot booking numbers help approvals.
 
+## Map and EV charging
+
+**Map.** The Event screen shows a live map (`src/components/EventMap.tsx`, built on `react-native-maps`): Google Maps on Android, Apple Maps on iPhone. It shows the venue, a drive-time circle, and pins for the current tab (stays, food, things to do, chargers); tapping a pin's label opens the listing or directions. A "my location" button shows where the family is (it asks for location permission only when tapped). The web preview shows a simple stand-in (`EventMap.web.tsx`).
+
+- Works in Expo Go with no keys.
+- Store builds: Android needs a Google Maps key (`GOOGLE_MAPS_ANDROID_API_KEY`, restricted to the app's package name and SHA-1 fingerprint, with Maps SDK for Android enabled). Set `GOOGLE_MAPS_IOS_API_KEY` only to use Google Maps instead of Apple Maps on iPhone. Keys are read by `app.config.js`.
+
+**EV chargers.** Event screen → **Charge** tab (also Trips → **EV chargers nearby**): public charging stations near the fields, or near the family's GPS position ("Near me"), with fast vs Level 2 ports, plug types, power and cost; tap for directions.
+
+| File | Role |
+| --- | --- |
+| `src/services/charging/types.ts` | `Charger` and `ChargerSearch` |
+| `src/services/charging/providers/openChargeMap.ts` | Open Charge Map v3 `poi` search, converted to `Charger` |
+| `src/services/charging/providers/backend.ts` | `POST /v1/charging/near` on Playcation's backend |
+| `src/services/charging/providers/sample.ts` | Sample stations until a source is connected |
+| `src/lib/geo.ts` | GPS (when-in-use permission) and distance |
+
+Source order: the backend if `EXPO_PUBLIC_API_URL` is set; else Open Charge Map if `EXPO_PUBLIC_OPENCHARGEMAP_KEY` is set; else sample stations.
+
+| Source | Coverage | Cost |
+| --- | --- | --- |
+| [Open Charge Map](https://openchargemap.org) | Worldwide, community-maintained | Free for non-commercial and limited commercial use; plans for larger commercial use |
+| NREL Alternative Fuel Stations (U.S. Department of Energy) | United States, government data | Free API key; call it from the backend (`/api/alt-fuel-stations/v1/nearest.json`, `fuel_type=ELEC`) |
+
+Backend contract: `POST /v1/charging/near` with `{ near: { lat, lng }, radiusMiles, fastOnly, limit }` returns `{ chargers: Charger[] }`. Merging both sources and removing duplicates is the backend's job.
+
 ## Also planned
 
 - **Sports organizations** (Perfect Game, PBR, USSSA and others): event schedules and venue coordinates, which feed `StaySearch.venue`.

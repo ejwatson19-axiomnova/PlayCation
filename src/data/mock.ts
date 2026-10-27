@@ -20,6 +20,14 @@ export const SPORTS: Sport[] = [
   { name: 'Gymnastics', orgs: ['USA Gymnastics', 'AAU Gymnastics', 'USAIGC', 'NGA'], division: 'Level 7', venue: 'gyms', unit: 'Session' },
 ];
 
+export type LatLng = { lat: number; lng: number };
+
+// Sample venue: Front Range Sports Complex, Aurora, CO (EazyTab's demo tournament venue).
+export const SAMPLE_VENUE: LatLng = { lat: 39.6402, lng: -104.7311 };
+
+/** A sample position near the sample venue (offsets in degrees). */
+const near = (dLat: number, dLng: number): LatLng => ({ lat: SAMPLE_VENUE.lat + dLat, lng: SAMPLE_VENUE.lng + dLng });
+
 export type EventItem = {
   id: string;
   month: string;
@@ -28,14 +36,16 @@ export type EventItem = {
   city: string;
   dates: string;
   staysNearby: number;
+  /** Venue coordinates (from the sports-organization feed once connected). */
+  venue: LatLng;
 };
 
 export function eventsFor(sport: Sport, org: string): EventItem[] {
   const slug = (sport.name + '-' + org).toLowerCase().replace(/[^a-z0-9]+/g, '-');
   return [
-    { id: slug + '-1', month: 'NOV', day: '13', name: `[Tournament name] · ${sport.division}`, city: '[City, ST]', dates: 'Nov 13–15', staysNearby: 42 },
-    { id: slug + '-2', month: 'DEC', day: '04', name: `[Tournament name] · ${sport.division}`, city: '[City, ST]', dates: 'Dec 4–6', staysNearby: 28 },
-    { id: slug + '-3', month: 'JAN', day: '15', name: `[Tournament name] · ${sport.division}`, city: '[City, ST]', dates: 'Jan 15–17', staysNearby: 35 },
+    { id: slug + '-1', month: 'NOV', day: '13', name: `[Tournament name] · ${sport.division}`, city: '[City, ST]', dates: 'Nov 13–15', staysNearby: 42, venue: SAMPLE_VENUE },
+    { id: slug + '-2', month: 'DEC', day: '04', name: `[Tournament name] · ${sport.division}`, city: '[City, ST]', dates: 'Dec 4–6', staysNearby: 28, venue: SAMPLE_VENUE },
+    { id: slug + '-3', month: 'JAN', day: '15', name: `[Tournament name] · ${sport.division}`, city: '[City, ST]', dates: 'Jan 15–17', staysNearby: 35, venue: SAMPLE_VENUE },
   ];
 }
 
@@ -70,13 +80,15 @@ export type Stay = {
   miles: number;
   pricePerNight: string;
   perks: string[];
+  /** Map position (sample positions sit around the sample venue). */
+  location?: LatLng;
 };
 
 export const STAYS: Stay[] = [
-  { id: 'home-1', type: 'Home', name: '[Home name] · 4BR', summary: '4 bedrooms · 3 baths', sleeps: 10, driveMin: 4, miles: 1.1, pricePerNight: '[$000]', perks: ['Parking for 3 cars', 'Washer for uniforms', 'Full kitchen', 'Early check-in'] },
-  { id: 'hotel-1', type: 'Hotel', name: '[Hotel name]', summary: 'Suite · 2 queens + sofa bed', sleeps: 6, driveMin: 6, miles: 1.8, pricePerNight: '[$000]', perks: ['Team rate', 'Pool', 'Free breakfast', 'Free parking'] },
-  { id: 'condo-1', type: 'Condo', name: '[Condo name] · 2BR', summary: '2 bedrooms · 2 baths', sleeps: 6, driveMin: 8, miles: 2.6, pricePerNight: '[$000]', perks: ['Washer for uniforms', 'Full kitchen', 'Gear storage', 'Free parking'] },
-  { id: 'apt-1', type: 'Apartment', name: '[Apartment name] · 3BR', summary: '3 bedrooms · 2 baths', sleeps: 7, driveMin: 11, miles: 4.0, pricePerNight: '[$000]', perks: ['Full kitchen', 'Washer', 'Elevator', 'Free parking'] },
+  { id: 'home-1', location: near(0.012, 0.008), type: 'Home', name: '[Home name] · 4BR', summary: '4 bedrooms · 3 baths', sleeps: 10, driveMin: 4, miles: 1.1, pricePerNight: '[$000]', perks: ['Parking for 3 cars', 'Washer for uniforms', 'Full kitchen', 'Early check-in'] },
+  { id: 'hotel-1', location: near(-0.018, 0.021), type: 'Hotel', name: '[Hotel name]', summary: 'Suite · 2 queens + sofa bed', sleeps: 6, driveMin: 6, miles: 1.8, pricePerNight: '[$000]', perks: ['Team rate', 'Pool', 'Free breakfast', 'Free parking'] },
+  { id: 'condo-1', location: near(0.031, -0.022), type: 'Condo', name: '[Condo name] · 2BR', summary: '2 bedrooms · 2 baths', sleeps: 6, driveMin: 8, miles: 2.6, pricePerNight: '[$000]', perks: ['Washer for uniforms', 'Full kitchen', 'Gear storage', 'Free parking'] },
+  { id: 'apt-1', location: near(-0.041, -0.036), type: 'Apartment', name: '[Apartment name] · 3BR', summary: '3 bedrooms · 2 baths', sleeps: 7, driveMin: 11, miles: 4.0, pricePerNight: '[$000]', perks: ['Full kitchen', 'Washer', 'Elevator', 'Free parking'] },
 ];
 
 export type Place = {
@@ -86,24 +98,25 @@ export type Place = {
   driveMin: number;
   /** Set when the venue takes orders through EazyTab. */
   eazytabVenueId?: string;
+  location?: LatLng;
 };
 
 export const EAT: Place[] = [
   // EazyTab demo venue: Front Range Sports Complex (see the EazyTab repo's README).
-  { tag: 'SNACK', name: 'Snack Shack', note: 'At the complex · order ahead, pick a pickup time', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.snack-shack' },
-  { tag: 'GRILL', name: 'Grill Station', note: 'At the complex · burgers and tenders', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.grill-station' },
-  { tag: 'COFFEE', name: 'Coffee & Smoothies', note: 'At the complex · main entrance', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.coffee-smoothies' },
-  { tag: 'BBQ', name: '[Restaurant name]', note: 'Big groups welcome', driveMin: 3 },
-  { tag: 'PIZZA', name: '[Pizza place]', note: 'Delivers to the fields', driveMin: 5 },
-  { tag: 'CAFE', name: '[Breakfast spot]', note: 'Opens 6 AM', driveMin: 4 },
-  { tag: 'SHOP', name: '[Grocery store]', note: 'Snacks, ice, drinks', driveMin: 3 },
+  { tag: 'SNACK', name: 'Snack Shack', location: SAMPLE_VENUE, note: 'At the complex · order ahead, pick a pickup time', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.snack-shack' },
+  { tag: 'GRILL', name: 'Grill Station', location: near(0.0012, 0.0015), note: 'At the complex · burgers and tenders', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.grill-station' },
+  { tag: 'COFFEE', name: 'Coffee & Smoothies', location: near(-0.0015, -0.0008), note: 'At the complex · main entrance', driveMin: 0, eazytabVenueId: 'youth-tournaments.front-range-sports-complex.coffee-smoothies' },
+  { tag: 'BBQ', name: '[Restaurant name]', location: near(0.009, 0.014), note: 'Big groups welcome', driveMin: 3 },
+  { tag: 'PIZZA', name: '[Pizza place]', location: near(-0.016, 0.019), note: 'Delivers to the fields', driveMin: 5 },
+  { tag: 'CAFE', name: '[Breakfast spot]', location: near(0.013, -0.011), note: 'Opens 6 AM', driveMin: 4 },
+  { tag: 'SHOP', name: '[Grocery store]', location: near(-0.007, -0.012), note: 'Snacks, ice, drinks', driveMin: 3 },
 ];
 
 export const PLAY: Place[] = [
-  { tag: 'FUN', name: '[Trampoline park]', note: 'Team group rates', driveMin: 9 },
-  { tag: 'BOWL', name: '[Bowling alley]', note: 'Lanes for big groups', driveMin: 7 },
-  { tag: 'SWIM', name: '[Water park]', note: 'Indoor · open late', driveMin: 14 },
-  { tag: 'PARK', name: '[City park]', note: 'Playground + picnic', driveMin: 5 },
+  { tag: 'FUN', name: '[Trampoline park]', location: near(0.028, 0.025), note: 'Team group rates', driveMin: 9 },
+  { tag: 'BOWL', name: '[Bowling alley]', location: near(-0.022, 0.03), note: 'Lanes for big groups', driveMin: 7 },
+  { tag: 'SWIM', name: '[Water park]', location: near(0.045, -0.04), note: 'Indoor · open late', driveMin: 14 },
+  { tag: 'PARK', name: '[City park]', location: near(-0.011, 0.016), note: 'Playground + picnic', driveMin: 5 },
 ];
 
 export const GAME_TIMES = [

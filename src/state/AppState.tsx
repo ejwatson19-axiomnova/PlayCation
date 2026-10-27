@@ -65,7 +65,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       },
       setOrg,
       events,
-      findEvent: (id) => events.find((e) => e.id === id),
+      findEvent: (id) => events.find((e) => e.id === id) ?? (booking?.event.id === id ? booking.event : undefined),
       findStay: (id) => getCachedStay(id) ?? STAYS.find((s) => s.id === id),
       booking,
       book: (stay, event, splitWithTeam) => {
